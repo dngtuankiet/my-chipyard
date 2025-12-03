@@ -146,6 +146,16 @@ lazy val rocketchip = freshProject("rocketchip", rocketChipDir)
 lazy val rocketLibDeps = (rocketchip / Keys.libraryDependencies)
 
 
+lazy val custom_mmio = (project in file("custom-mmio/"))
+  .dependsOn(testchipip, rocketchip, boom, rocketchip_blocks, rocketchip_inclusive_cache,
+    dsptools, rocket_dsp_utils,
+    gemmini, icenet, tracegen, cva6, nvdla, sodor, ibex, fft_generator,
+    constellation, mempress, barf, shuttle, caliptra_aes, rerocc,
+    compressacc, saturn, ara, firrtl2_bridge, vexiiriscv)
+  .settings(libraryDependencies ++= rocketLibDeps.value)
+  .settings(commonSettings)
+
+
 // -- Chipyard-managed External Projects --
 
 lazy val testchipip = (project in file("generators/testchipip"))
@@ -158,7 +168,7 @@ lazy val chipyard = (project in file("generators/chipyard"))
     dsptools, rocket_dsp_utils,
     gemmini, icenet, tracegen, cva6, nvdla, sodor, ibex, fft_generator,
     constellation, mempress, barf, shuttle, caliptra_aes, rerocc,
-    compressacc, saturn, ara, firrtl2_bridge, vexiiriscv)
+    compressacc, saturn, ara, firrtl2_bridge, vexiiriscv,custom_mmio)
   .settings(libraryDependencies ++= rocketLibDeps.value)
   .settings(
     libraryDependencies ++= Seq(
@@ -320,6 +330,15 @@ lazy val fpga_shells = (project in file("./fpga/fpga-shells"))
 
 lazy val chipyard_fpga = (project in file("./fpga"))
   .dependsOn(chipyard, fpga_shells)
+  .settings(commonSettings)
+
+lazy val base_fpga_shells = (project in file("./base/base-fpga-shells"))
+  .dependsOn(rocketchip, rocketchip_blocks)
+  .settings(libraryDependencies ++= rocketLibDeps.value)
+  .settings(commonSettings)
+
+lazy val base_chipyard_fpga = (project in file("./base"))
+  .dependsOn(chipyard, base_fpga_shells)
   .settings(commonSettings)
 
 // Components of FireSim
