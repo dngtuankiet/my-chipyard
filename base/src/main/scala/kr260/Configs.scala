@@ -132,6 +132,14 @@ class BaseRocketKR260Config extends Config(
   new chipyard.config.AbstractConfig
 )
 
+class RAM32KBRocketKR260Config extends Config(
+  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 2KB I-Cache (8 sets × 4 ways × 64B = 2KB)
+  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 2KB D-Cache (8 sets × 4 ways × 64B = 2KB)
+  new WithBaseKR260Tweaks(freqMHz=50, sizeKB=32) ++
+  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new chipyard.config.AbstractConfig
+)
+
 // RV32I configuration with larger 128KB scratchpad at 75MHz
 class RocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=75, sizeKB=128) ++

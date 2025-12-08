@@ -157,6 +157,12 @@ class WithBaseArty100TTweaks(freqMHz: Double = 50, isAsicCompatible: Boolean = f
 )
 
 class BaseRocketArty100TConfig extends Config(
+  new WithBaseArty100TTweaks(isAsicCompatible=false) ++
+  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new chipyard.config.AbstractConfig
+)
+
+class AsicCompatibleRocketArty100TConfig extends Config(
   new WithBaseArty100TTweaks(isAsicCompatible=true) ++
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
