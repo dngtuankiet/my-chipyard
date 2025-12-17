@@ -52,11 +52,11 @@ class KR260Harness(override implicit val p: Parameters) extends KR260Shell {
   val status_leds = all_leds.take(1)
   val other_leds = all_leds.drop(1)
 
-  // CUSTOM CODE 
-  /*** SPI (SDIO) ***/
-  val io_spi_bb = BundleBridgeSource(() => (new SPIPortIO(dp(PeripherySPIKey).head)))
-  dp(SPIOverlayKey).head.place(SPIDesignInput(dp(PeripherySPIKey).head, io_spi_bb))
-  // CUSTOM CODE END
+  // // CUSTOM CODE 
+  // /*** SPI (SDIO) ***/
+  // val io_spi_bb = BundleBridgeSource(() => (new SPIPortIO(dp(PeripherySPIKey).head)))
+  // dp(SPIOverlayKey).head.place(SPIDesignInput(dp(PeripherySPIKey).head, io_spi_bb))
+  // // CUSTOM CODE END
 
   override lazy val module = new HarnessLikeImpl
 

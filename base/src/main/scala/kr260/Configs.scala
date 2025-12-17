@@ -103,11 +103,9 @@ class WithBaseKR260Tweaks(freqMHz: Double = 50, sizeKB: Int = 64) extends Config
   // Peripherals
   new WithDefaultPeripherals ++
   new WithKR260UARTHarnessBinder ++ // UART ports
+  new WithModifiedChipTopSDCardIO ++ // SPI ports
   new WithKR260SPIHarnessBinder ++ // SPI ports
   new WithKR260JTAG ++ // JTAG port
-
-  // Custom MMIO configurations
-  // new custom_mmio.crypto.upt.WithUPT(BigInt(0x70001000L), platform="kr260") ++
 
   // Memory Configuration - KR260 uses on-chip scratchpad memory
   // Note: KR260's 4GB DDR4 is connected to PS (Processing System), not PL (Programmable Logic)
@@ -125,17 +123,23 @@ class WithBaseKR260Tweaks(freqMHz: Double = 50, sizeKB: Int = 64) extends Config
 // Base configuration for RV32I on KR260 with 32KB scratchpad at 50MHz (default)
 // L1 caches reduced to 2KB each to save BRAM resources
 class BaseRocketKR260Config extends Config(
-  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 2KB I-Cache (8 sets × 4 ways × 64B = 2KB)
-  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 2KB D-Cache (8 sets × 4 ways × 64B = 2KB)
   new WithBaseKR260Tweaks(freqMHz=50, sizeKB=16) ++
+  // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
+  new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
+  new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
+  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
+  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
 
 class RAM32KBRocketKR260Config extends Config(
-  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 2KB I-Cache (8 sets × 4 ways × 64B = 2KB)
-  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 2KB D-Cache (8 sets × 4 ways × 64B = 2KB)
   new WithBaseKR260Tweaks(freqMHz=50, sizeKB=32) ++
+  // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
+  new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
+  new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
+  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
+  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
