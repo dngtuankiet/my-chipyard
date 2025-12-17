@@ -33,7 +33,7 @@ import freechips.rocketchip.resources.{DTSTimebase}
 import sifive.fpgashells.shell.xilinx.{ArtyDDRSize}
 import scala.sys.process._
 import chipyard.config._
-
+import testchipip.soc.{BankedScratchpadKey, BankedScratchpadParams}
 
 // don't use FPGAShell's DesignKey
 class WithNoDesignKey extends Config((site, here, up) => {
@@ -106,10 +106,24 @@ class WithSystemModifications extends Config((site, here, up) => {
   case SerialTLKey => Nil // remove serialized tl port
 })
 
+
 class WithScratchpadAsRAM(sizeKB: Int) extends Config(
   new WithNoMemPort ++
-  new testchipip.soc.WithMbusScratchpad(base=0x80000000L, size=(sizeKB<<10)) // 16KB
+  new Config((site, here, up) => {
+    case BankedScratchpadKey => Seq(BankedScratchpadParams(
+      base = 0x80000000L,
+      size = BigInt(sizeKB) << 10,
+      busWhere = MBUS,
+      banks = 1,
+      subBanks = 1,
+      name = "mbus-scratchpad",
+      // buffer = BufferParams.default,
+      // outerBuffer = BufferParams.default
+    ))
+  })
 )
+
+
 class WithDefaultDDRAsRAM() extends Config(
   new WithArty100TDDRTL ++
   new freechips.rocketchip.subsystem.WithExtMemSize(BigInt(256) << 20) ++ // 256mb on ARTY
@@ -157,7 +171,7 @@ class WithBaseArty100TTweaks(freqMHz: Double = 50, isAsicCompatible: Boolean = f
 )
 
 class BaseRocketArty100TConfig extends Config(
-  new WithBaseArty100TTweaks(isAsicCompatible=false) ++
+  new WithBaseArty100TTweaks(isAsicCompatible=true) ++
   // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
   new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
   new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache

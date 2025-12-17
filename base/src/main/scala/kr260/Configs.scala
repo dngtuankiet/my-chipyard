@@ -32,6 +32,7 @@ import testchipip.serdes.{SerialTLKey}
 import freechips.rocketchip.resources.{DTSTimebase}
 import scala.sys.process._
 import chipyard.config._
+import testchipip.soc.{BankedScratchpadKey, BankedScratchpadParams}
 
 
 // don't use FPGAShell's DesignKey
@@ -71,7 +72,18 @@ class WithSystemModifications extends Config((site, here, up) => {
 
 class WithScratchpadAsRAM(sizeKB: Int) extends Config(
   new WithNoMemPort ++
-  new testchipip.soc.WithMbusScratchpad(base=0x80000000L, size=(sizeKB<<10))
+  new Config((site, here, up) => {
+    case BankedScratchpadKey => Seq(BankedScratchpadParams(
+      base = 0x80000000L,
+      size = BigInt(sizeKB) << 10,
+      busWhere = MBUS,
+      banks = 1,
+      subBanks = 1,
+      name = "mbus-scratchpad",
+      // buffer = BufferParams.default,
+      // outerBuffer = BufferParams.default
+    ))
+  })
 )
 
 class WithDefaultPeripherals extends Config((site, here, up) => {
