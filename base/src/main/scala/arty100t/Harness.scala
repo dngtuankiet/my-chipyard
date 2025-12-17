@@ -64,12 +64,6 @@ class Arty100THarness(override implicit val p: Parameters) extends Arty100TShell
   val status_leds = all_leds.take(3)
   val other_leds = all_leds.drop(3)
 
-  // CUSTOM CODE 
-  /*** SDIO ***/
-  val io_spi_bb = BundleBridgeSource(() => (new SPIPortIO(dp(PeripherySPIKey).head)))
-  dp(SPIOverlayKey).head.place(SPIDesignInput(dp(PeripherySPIKey).head, io_spi_bb))
-  // CUSTOM CODE END
-
   override lazy val module = new HarnessLikeImpl
 
   class HarnessLikeImpl extends Impl with HasHarnessInstantiators {

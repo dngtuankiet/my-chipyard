@@ -135,11 +135,11 @@ class WithBaseArty100TTweaks(freqMHz: Double = 50, isAsicCompatible: Boolean = f
   // Peripherals
   new WithDefaultPeripherals ++
   new WithArty100TUARTHarnessBinder ++ // UART ports
+  new WithModifiedChipTopSDCardIO ++ // SPI ports
   new WithArty100TSPIHarnessBinder ++ // SPI ports
   new WithArty100TJTAG ++ // JTAG port
 
   // Custom MMIO configurations
-  // new custom_mmio.crypto.upt.WithUPT(BigInt(0x70001000L), platform="arty100t") ++
 
   // Memory Configurations
   (if (isAsicCompatible) {
