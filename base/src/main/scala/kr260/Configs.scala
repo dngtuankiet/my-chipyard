@@ -70,6 +70,17 @@ class WithSystemModifications extends Config((site, here, up) => {
   case SerialTLKey => Nil // remove serialized tl port
 })
 
+// Force all primary TileLink buses to 32-bit beats (4B). This impacts the
+// generated memory macro port widths for caches and on-chip SRAMs attached to
+// these buses.
+class With32BitTileLinkBuses extends Config((site, here, up) => {
+  case SystemBusKey => up(SystemBusKey, site).copy(beatBytes = 4)
+  case ControlBusKey => up(ControlBusKey, site).copy(beatBytes = 4)
+  case PeripheryBusKey => up(PeripheryBusKey, site).copy(beatBytes = 4)
+  case MemoryBusKey => up(MemoryBusKey, site).copy(beatBytes = 4)
+  case FrontBusKey => up(FrontBusKey, site).copy(beatBytes = 4)
+})
+
 class WithScratchpadAsRAM(sizeKB: Int) extends Config(
   new WithNoMemPort ++
   new Config((site, here, up) => {
@@ -136,11 +147,15 @@ class WithBaseKR260Tweaks(freqMHz: Double = 50, sizeKB: Int = 64) extends Config
 // L1 caches reduced to 2KB each to save BRAM resources
 class BaseRocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=50, sizeKB=16) ++
+  new With32BitTileLinkBuses ++
+  new freechips.rocketchip.subsystem.WithCacheBlockBytes(32) ++
+  new freechips.rocketchip.rocket.WithCacheRowBits(32) ++
   // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
-  new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
-  new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
-  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
-  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
+  // Configuration for $I and $D caches (32 sets × 1 ways × 64B = 2KB)
+  new freechips.rocketchip.rocket.WithL1ICacheWays(1) ++
+  new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++ 
+  new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++ 
+  new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
@@ -148,10 +163,10 @@ class BaseRocketKR260Config extends Config(
 class RAM32KBRocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=50, sizeKB=32) ++
   // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
-  new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
-  new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
-  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
-  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
+  new freechips.rocketchip.rocket.WithL1ICacheWays(1) ++  // 4-way I-Cache
+  new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++  // 4-way D-Cache
+  new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++  // 8-set I-Cache 
+  new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++  // 8-set D-Cache
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
@@ -160,13 +175,13 @@ class RAM32KBRocketKR260Config extends Config(
 class RocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=75, sizeKB=128) ++
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
 
 // RV64GC configuration on KR260 with higher performance and larger memory
 class RocketKR260HighPerfConfig extends Config(
   new WithBaseKR260Tweaks(freqMHz=125, sizeKB=256) ++
-  new chipyard.config.WithBroadcastManager ++ // no L2
   new chipyard.RocketConfig
 )
 

@@ -106,6 +106,17 @@ class WithSystemModifications extends Config((site, here, up) => {
   case SerialTLKey => Nil // remove serialized tl port
 })
 
+// Force all primary TileLink buses to 32-bit beats (4B). This impacts the
+// generated memory macro port widths for caches and on-chip SRAMs attached to
+// these buses.
+class With32BitTileLinkBuses extends Config((site, here, up) => {
+  case SystemBusKey => up(SystemBusKey, site).copy(beatBytes = 4)
+  case ControlBusKey => up(ControlBusKey, site).copy(beatBytes = 4)
+  case PeripheryBusKey => up(PeripheryBusKey, site).copy(beatBytes = 4)
+  case MemoryBusKey => up(MemoryBusKey, site).copy(beatBytes = 4)
+  case FrontBusKey => up(FrontBusKey, site).copy(beatBytes = 4)
+})
+
 
 class WithScratchpadAsRAM(sizeKB: Int) extends Config(
   new WithNoMemPort ++
@@ -172,17 +183,21 @@ class WithBaseArty100TTweaks(freqMHz: Double = 50, isAsicCompatible: Boolean = f
 
 class BaseRocketArty100TConfig extends Config(
   new WithBaseArty100TTweaks(isAsicCompatible=true) ++
+  new With32BitTileLinkBuses ++
   // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
-  new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
-  new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
-  new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
-  new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
+  // Configuration for $I and $D caches (32 sets × 1 ways × 64B = 2KB)
+  new freechips.rocketchip.rocket.WithL1ICacheWays(1) ++
+  new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++ 
+  new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++ 
+  new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++
   new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
   new chipyard.config.AbstractConfig
 )
 
 class AsicCompatibleRocketArty100TConfig extends Config(
   new WithBaseArty100TTweaks(isAsicCompatible=true) ++
+  new With32BitTileLinkBuses ++
+  
   // Configuration for $I and $D caches (8 sets × 4 ways × 64B = 2KB)
   new freechips.rocketchip.rocket.WithL1ICacheWays(4) ++  // 4-way I-Cache
   new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
