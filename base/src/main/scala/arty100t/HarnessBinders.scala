@@ -146,10 +146,10 @@ class WithArty100TJTAG extends HarnessBinder({
     ath.sdc.addGroup(clocks = Seq("JTCK"))
     ath.xdc.clockDedicatedRouteFalse(IOPin(harnessIO.TCK))
     val packagePinsWithPackageIOs = Seq(
-      ("F4", IOPin(harnessIO.TCK)),
-      ("D2", IOPin(harnessIO.TMS)),
-      ("E2", IOPin(harnessIO.TDI)),
-      ("D4", IOPin(harnessIO.TDO))
+      ("C15", IOPin(harnessIO.TCK)), //pin PMODB_4
+      ("E15", IOPin(harnessIO.TMS)), //pin PMODB_1
+      ("E16", IOPin(harnessIO.TDI)), //pin PMODB_2
+      ("D15", IOPin(harnessIO.TDO)) //pin PMODB_3
     )
     packagePinsWithPackageIOs foreach { case (pin, io) => {
       ath.xdc.addPackagePin(io, pin)

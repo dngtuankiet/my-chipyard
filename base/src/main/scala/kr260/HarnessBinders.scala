@@ -42,10 +42,10 @@ class WithKR260JTAG extends HarnessBinder({
     // KR260 JTAG pin assignments (matching KR260Shell.scala)
     // Note: These pins match the JTAG overlay in KR260Shell
     val packagePinsWithPackageIOs = Seq(
-      ("AC12", IOPin(harnessIO.TCK)),  // JTAG TCK
-      ("AD12", IOPin(harnessIO.TMS)),  // JTAG TMS
-      ("AE10", IOPin(harnessIO.TDI)),  // JTAG TDI
-      ("AF10", IOPin(harnessIO.TDO))   // JTAG TDO
+      ("AF10", IOPin(harnessIO.TCK)),  // pin PMOD4_IO4
+      ("AC12", IOPin(harnessIO.TMS)),  // JTAG PMOD4_IO1
+      ("AD12", IOPin(harnessIO.TDI)),  // JTAG PMOD4_IO2
+      ("AE10", IOPin(harnessIO.TDO))   // JTAG PMOD4_IO3
       // Note: srst_n (F14) is handled separately in shell
     )
     packagePinsWithPackageIOs foreach { case (pin, io) => {
