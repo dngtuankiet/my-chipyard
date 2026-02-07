@@ -5,7 +5,7 @@ BUILD_DIR := $(ROOT_DIR)/build
 CC=$(RISCV)/bin/riscv64-unknown-elf-gcc
 OBJCOPY=$(RISCV)/bin/riscv64-unknown-elf-objcopy
 OBJDUMP=$(RISCV)/bin/riscv64-unknown-elf-objdump
-CFLAGS=-march=rv32izicsr_zifencei_zihpm -mcmodel=medany -O2 -std=gnu11 -Wall -nostartfiles
+CFLAGS=-march=rv32imaczicsr_zifencei_zihpm -mcmodel=medany -O2 -std=gnu11 -Wall -nostartfiles
 CFLAGS+= -fno-common -g -DENTROPY=0 -mabi=ilp32 -DNONSMP_HART=0
 CFLAGS+= -I $(ROOT_DIR)/include -I.
 LFLAGS=-static -nostdlib -L $(ROOT_DIR)/linker -T sdboot.elf.lds

@@ -190,7 +190,7 @@ class BaseRocketArty100TConfig extends Config(
   new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++ 
   new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++ 
   new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.config.AbstractConfig
 )
 
@@ -203,6 +203,6 @@ class AsicCompatibleRocketArty100TConfig extends Config(
   new freechips.rocketchip.rocket.WithL1DCacheWays(4) ++  // 4-way D-Cache
   new freechips.rocketchip.rocket.WithL1ICacheSets(8) ++  // 8-set I-Cache 
   new freechips.rocketchip.rocket.WithL1DCacheSets(8) ++  // 8-set D-Cache
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.config.AbstractConfig
 )

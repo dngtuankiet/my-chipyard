@@ -156,7 +156,7 @@ class BaseRocketKR260Config extends Config(
   new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++ 
   new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++ 
   new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.config.AbstractConfig
 )
 
@@ -167,28 +167,28 @@ class RAM32KBRocketKR260Config extends Config(
   new freechips.rocketchip.rocket.WithL1DCacheWays(1) ++  // 4-way D-Cache
   new freechips.rocketchip.rocket.WithL1ICacheSets(32) ++  // 8-set I-Cache 
   new freechips.rocketchip.rocket.WithL1DCacheSets(32) ++  // 8-set D-Cache
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.config.AbstractConfig
 )
 
 // RV32I configuration with larger 128KB scratchpad at 75MHz
 class RocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=75, sizeKB=128) ++
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
-  new freechips.rocketchip.rocket.WithNRV32ICores(1) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.config.AbstractConfig
 )
 
 // RV64GC configuration on KR260 with higher performance and larger memory
 class RocketKR260HighPerfConfig extends Config(
   new WithBaseKR260Tweaks(freqMHz=125, sizeKB=256) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(1) ++
   new chipyard.RocketConfig
 )
 
 // Dual-core RV32I configuration on KR260
 class DualCoreRocketKR260Config extends Config(
   new WithBaseKR260Tweaks(freqMHz=100, sizeKB=128) ++
-  new freechips.rocketchip.rocket.WithNRV32ICores(2) ++
+  new freechips.rocketchip.rocket.WithNRV32IMACCores(2) ++
   new chipyard.config.AbstractConfig
 )
 
